@@ -1,0 +1,42 @@
+#!/usr/bin/env perl6
+
+grammar Pinpoint::Grammar {
+  token TOP {
+    <header>
+    <slide>+
+    .*
+  }
+
+  token slide {
+    <slide-header>
+    <slide-content>
+  }
+
+  token slide-header { ^^ \-\- (\s* <slide-setting>)* $$ \n }
+
+  token slide-setting { '[' <-[ \[ \] \n ]>+ ']' }
+
+  token slide-content { .*? <?before "--"> || .*$ }
+
+  token header { .*? <?before \-\-> }
+
+};
+
+my $match = Pinpoint::Grammar.parse(slurp());
+
+print $match<header>;
+
+for $match<slide>.flat -> $slide {
+  print $slide<slide-header>;
+
+  if ~$slide<slide-header> ~~ /\[code\=(.*?)\]/ {
+    my $cmd = "code-htmlize $0";
+    my $filter = shell $cmd, :in, :out;
+    $filter.in.say(~$slide<slide-content>);
+    $filter.in.close;
+    say $filter.out.slurp-rest;
+  } else {
+    print $slide<slide-content>;
+  }
+}
+
