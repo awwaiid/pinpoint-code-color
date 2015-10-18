@@ -1,25 +1,25 @@
 #!/usr/bin/env perl6
 
+use LREP;
+
 grammar Pinpoint::Grammar {
   token TOP {
     <header>
-    <slide>+
-    .*
+    <slide>*
   }
+
+  token header { .*? <?before ^^ "--" > }
 
   token slide {
     <slide-header>
     <slide-content>
   }
 
-  token slide-header { ^^ \-\- (\s* <slide-setting>)* $$ \n }
+  token slide-header { ^^ "--" (\s* <slide-setting>)* $$ \n }
 
-  token slide-setting { '[' <-[ \[ \] \n ]>+ ']' }
+  token slide-setting { '[' .+? ']' }
 
-  token slide-content { .*? <?before "--"> || .*$ }
-
-  token header { .*? <?before \-\-> }
-
+  token slide-content { .*? <?before ^^ "--" > || .*$ }
 };
 
 my $match = Pinpoint::Grammar.parse(slurp());
@@ -27,9 +27,13 @@ my $match = Pinpoint::Grammar.parse(slurp());
 print $match<header>;
 
 for $match<slide>.flat -> $slide {
-  print $slide<slide-header>;
+  my $h = ~$slide<slide-header>;
+  $h ~~ s/\s*\[code\=(.*?)\]//;
+  print $h;
+  # print $slide<slide-header>;
 
   if ~$slide<slide-header> ~~ /\[code\=(.*?)\]/ {
+    # LREP::here;
     my $cmd = "code-htmlize $0";
     my $filter = shell $cmd, :in, :out;
     $filter.in.say(~$slide<slide-content>);

@@ -1,0 +1,432 @@
+#!/usr/bin/env pinpoint
+
+# Defaults for all slides
+[blackbluefade.png]
+[font=Sans 90]
+[duration=50.00]
+[fill]
+[shading-opacity=0]
+
+--
+
+<span font='80'>HTTP Adapers</span>
+<span font='20'>
+Polyglot Programming DC 2015
+
+Brock Wilcox
+awwaiid@thelackthereof.org
+</span>
+
+--
+
+Web Applications
+
+--
+
+Request → Response
+
+--
+
+Let's go BACK....
+
+--
+
+to 1993
+
+--
+
+CGI
+
+Common Gateway Interface
+
+--
+
+Request → Response
+
+--
+
+... Unix!
+
+--
+
+Request → Response
+
+ENV + STDIN → STDOUT
+
+ENV == Headers (params)
+STDIN == POST
+STDOUT == Headers + Body
+
+-- [font=monospace 99]
+<span face="monospace">
+
+<span color="#e4e4e4">\#</span>!/bin/sh
+
+<span color="#e4e4e4">\#</span> A lovely cgi application
+
+<span color="#e4e4e4">echo</span><span color="#afd700"> </span><span color="#5fafaf">&quot;</span><span color="#afd700">Content-type: text/html</span><span color="#5fafaf">&quot;</span>
+<span color="#e4e4e4">echo</span>
+<span color="#e4e4e4">echo</span><span color="#afd700"> </span><span color="#5fafaf">&quot;</span><span color="#afd700">Hello, world! Query:</span><span color="#5fafaf">&quot;</span>
+<span color="#e4e4e4">echo</span><span color="#afd700"> </span><span color="#d787d7">$QUERY_STRING</span>
+
+
+</span>
+
+--
+
+Parse the query string if you want
+
+--
+
+cgi programs
+rise from ash then burn again
+upon each request
+
+--
+
+Long running applications
+
+--
+
+Kinda long-running
+
+mod_perl
+mod_php
+mod_python
+...
+
+--
+
+Kinda long-running
+
+FastCGI
+
+--
+
+Just run your own HTTPD
+
+--
+
+Also annoying
+
+--
+
+Same webserver language,
+but unlink from webserver.
+
+--
+
+Web App Frameworks
+
+-- [font=monospace 99]
+
+func app(request) → response
+
+response = [ status, headers, body ]
+
+--
+
+Common Lisp - Clack
+Clojure - Ring
+Elixir - Plug
+Haskell - Hack2
+Java - Servlets?
+Javascript - JSGI
+Lua - WSAPI
+Perl - PSGI
+Perl6 - P6SGI
+Python - WSGI
+Ruby - Rack
+Scala - SSGI
+* - uWSGI
+
+-- [font=monospace 99]
+<span face="monospace">
+
+\<span color="#9e9e9e"># Python WSGI</span>
+
+<span color="#d787d7">def</span> <span color="#87afd7">application</span>(environ, start_response):
+    start_response(<span color="#afd700">'</span><span color="#afd700">200 OK</span><span color="#afd700">'</span>, [(<span color="#afd700">'</span><span color="#afd700">Content-Type</span><span color="#afd700">'</span>, <span color="#afd700">'</span><span color="#afd700">text/plain</span><span color="#afd700">'</span>)])
+    <span color="#d787d7">yield</span> <span color="#afd700">'</span><span color="#afd700">Hello, world!</span><span color="#afd700">'</span>
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+\<span color="#9e9e9e"># Ruby Rack</span>
+
+app = <span color="#d78700">lambda</span> <span color="#d787d7">do</span> |<span color="#d75f5f">env</span>|
+    [<span color="#d78700">200</span>, {<span color="#afd700">&quot;</span><span color="#afd700">Content-Type</span><span color="#afd700">&quot;</span><span color="#d78700"> =&gt; </span><span color="#afd700">&quot;</span><span color="#afd700">text/plain</span><span color="#afd700">&quot;</span>}, [<span color="#afd700">&quot;</span><span color="#afd700">Hello, world!</span><span color="#afd700">&quot;</span>]]
+<span color="#d787d7">end</span>
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+\<span color="#9e9e9e"># Perl PSGI</span>
+
+<span color="#e4e4e4">my</span> <span color="#d75f5f">$app</span> = <span color="#d78700">sub </span>{
+    <span color="#e4e4e4">my</span> (<span color="#d75f5f">$env</span>) = <span color="#d75f5f">@_</span>;
+    <span color="#e4e4e4">return</span> [<span color="#d78700">200</span>, [<span color="#afd700">'</span><span color="#afd700">Content-Type</span><span color="#afd700">'</span> =&gt; <span color="#afd700">'</span><span color="#afd700">text/plain</span><span color="#afd700">'</span>], [<span color="#afd700">&quot;</span><span color="#afd700">Hello, world!</span><span color="#afd700">&quot;</span>]];
+}
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+<span color="#9e9e9e">// Javascript JSGI</span>
+
+require(<span color="#afd700">&quot;jsgi-node&quot;</span>).start(<span color="#d787d7">function</span>(request)<span color="#e4e4e4">{</span>
+  <span color="#d75f5f">return</span> <span color="#e4e4e4">{</span>
+    <span color="#d78700">status</span>:<span color="#d78700">200</span>,
+    headers:<span color="#e4e4e4">{}</span>,
+    body:<span color="#e4e4e4">[</span><span color="#afd700">&quot;Hello, world!&quot;</span><span color="#e4e4e4">]</span>
+  <span color="#e4e4e4">}</span>;
+<span color="#e4e4e4">}</span>);
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+\<span color="#9e9e9e"># Elixir Plug</span>
+
+<span color="#d787d7">defmodule</span> <span color="#87afd7">MyPlug</span> <span color="#d78700">do</span>
+  <span color="#87afd7">import</span> <span color="#87afd7">Plug.Conn</span>
+
+  <span color="#d787d7">def</span> <span color="#87afd7">init</span>(options) <span color="#d78700">do</span>
+    <span color="#9e9e9e"># initialize options</span>
+    options
+  <span color="#d78700">end</span>
+
+  <span color="#d787d7">def</span> <span color="#87afd7">call</span>(conn, <span color="#9e9e9e">_opts</span>) <span color="#d78700">do</span>
+    conn
+    <span color="#5fafaf">|&gt;</span> put_resp_content_type(<span color="#e4e4e4">&quot;</span><span color="#afd700">text/plain</span><span color="#e4e4e4">&quot;</span>)
+    <span color="#5fafaf">|&gt;</span> send_resp(<span color="#d78700">200</span>, <span color="#e4e4e4">&quot;</span><span color="#afd700">Hello, world!</span><span color="#e4e4e4">&quot;</span>)
+  <span color="#d78700">end</span>
+<span color="#d78700">end</span>
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+<span color="#9e9e9e">; Clojure Ring</span>
+
+<span color="#0000c0">(</span><span color="#87afd7">ns</span> hello-world.core<span color="#0000c0">)</span>
+
+<span color="#0000c0">(</span><span color="#d787d7">defn</span> handler <span color="#008080">[</span>request<span color="#008080">]</span>
+  <span color="#008080">{</span><span color="#ffd75f">:status</span> <span color="#d78700">200</span>
+   <span color="#ffd75f">:headers</span> <span color="#008000">{</span><span color="#afd700">&quot;</span><span color="#afd700">Content-Type</span><span color="#afd700">&quot;</span> <span color="#afd700">&quot;</span><span color="#afd700">text/html</span><span color="#afd700">&quot;</span><span color="#008000">}</span>
+   <span color="#ffd75f">:body</span> <span color="#afd700">&quot;</span><span color="#afd700">Hello World</span><span color="#afd700">&quot;</span><span color="#008080">}</span><span color="#0000c0">)</span>
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+<span color="#5fafaf">\</span><span color="#9e9e9e"># Perl6 P6SGI</span>
+
+<span color="#d78700">sub</span> <span color="#e4e4e4">app</span>(<span color="#d75f5f">%</span><span color="#d75f5f">env</span>) {
+    <span color="#e4e4e4">start</span> {
+        <span color="#d78700">200</span><span color="#5fafaf">,</span> [ <span color="#afd700">Content-Type</span> <span color="#5fafaf">=&gt;</span> <span color="#e4e4e4">'</span><span color="#afd700">text/plain</span><span color="#e4e4e4">'</span> ]<span color="#5fafaf">,</span> [ <span color="#e4e4e4">'</span><span color="#afd700">Hello World!</span><span color="#e4e4e4">'</span> ]
+    }
+}
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+// Scala SSGI
+
+package org.scalatra.ssgi
+package examples.servlet
+
+import scala.xml.NodeSeq
+
+class HelloWorldApp extends Application {
+  def apply(v1: Request) = Response(body = &lt;h1&gt;Hello, world!&lt;/h1&gt;)
+}
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+Lua WSAPI
+
+<span color="#87afd7">function</span> hello(wsapi_env)
+  <span color="#d787d7">local</span> headers = <span color="#d787d7">{</span> [<span color="#afd700">&quot;Content-type&quot;</span>] = <span color="#afd700">&quot;text/html&quot;</span> <span color="#d787d7">}</span>
+
+  <span color="#d787d7">local</span> <span color="#87afd7">function</span> hello_text()
+    <span color="#d75f5f">coroutine.yield</span>(<span color="#afd700">&quot;Hello, world!&quot;</span>)
+  <span color="#87afd7">end</span>
+
+  <span color="#d787d7">return</span> <span color="#d78700">200</span>, headers, <span color="#d75f5f">coroutine.wrap</span>(hello_text)
+<span color="#87afd7">end</span>
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+<span color="#9e9e9e">// Java Servlet</span>
+
+<span color="#9e9e9e">// Import required java libraries</span>
+<span color="#87afd7">import</span> java.io.*;
+<span color="#87afd7">import</span> javax.servlet.*;
+<span color="#87afd7">import</span> javax.servlet.http.*;
+
+<span color="#9e9e9e">// Extend HttpServlet class</span>
+<span color="#87afd7">public</span> <span color="#87afd7">class</span> HelloWorld <span color="#87afd7">extends</span> HttpServlet {
+
+  <span color="#87afd7">private</span> String message;
+
+  <span color="#87afd7">public</span> <span color="#87afd7">void</span> init() <span color="#87afd7">throws</span> ServletException
+  {
+      <span color="#9e9e9e">// Do required initialization</span>
+      message = <span color="#afd700">&quot;Hello, world!&quot;</span>;
+  }
+
+  <span color="#87afd7">public</span> <span color="#87afd7">void</span> doGet(HttpServletRequest request,
+                    HttpServletResponse response)
+            <span color="#87afd7">throws</span> ServletException, IOException
+  {
+      <span color="#9e9e9e">// Set response content type</span>
+      response.setContentType(<span color="#afd700">&quot;text/html&quot;</span>);
+
+      <span color="#9e9e9e">// Actual logic goes here.</span>
+      PrintWriter out = response.getWriter();
+      out.println(<span color="#afd700">&quot;&lt;h1&gt;&quot;</span> + message + <span color="#afd700">&quot;&lt;/h1&gt;&quot;</span>);
+  }
+
+  <span color="#87afd7">public</span> <span color="#87afd7">void</span> destroy()
+  {
+      <span color="#9e9e9e">// do nothing.</span>
+  }
+}
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+<span color="#e4e4e4">{-# Haskell #-}</span>
+
+<span color="#e4e4e4">{-# LANGUAGE OverloadedStrings #-}</span>
+
+<span color="#87afd7">import</span> Hack2
+<span color="#87afd7">import</span> Hack2.Contrib.Response (set_body_bytestring)
+<span color="#87afd7">import</span> Hack2.Handler.SnapServer
+
+app <span color="#5fafaf">::</span> Application
+app <span color="#5fafaf">=</span> <span color="#5fafaf">\</span>env <span color="#5fafaf">-&gt;</span>
+  return <span color="#5fafaf">$</span>
+    Response
+      <span color="#d78700">200</span> [ (<span color="#afd700">&quot;Content-Type&quot;</span>, <span color="#afd700">&quot;text/plain&quot;</span>) ] <span color="#afd700">&quot;Hello, world!&quot;</span>
+
+main <span color="#5fafaf">=</span> run app
+
+
+</span>
+
+--
+
+Streaming
+
+response = [status, headers, callback]
+
+Keep invoking callback until done
+
+--
+
+Streaming
+
+response = [status, headers, promise]
+
+Wait for promise results, maybe chained
+
+--
+
+Streaming / Websockets ... not unified
+
+--
+
+Middleware
+
+--
+
+app: request → response
+
+middleware: app → (request → response)
+
+-- [font=monospace 99]
+<span face="monospace">
+
+<span color="#d787d7">def</span> <span color="#87afd7">middlin</span>(app)
+  <span color="#d78700">lambda</span> <span color="#d787d7">do</span> |<span color="#d75f5f">request</span>|
+    <span color="#9e9e9e"># ... mess with request</span>
+    app_response = app(request)
+    <span color="#9e9e9e"># ... mess with app_response</span>
+    app_response
+  <span color="#d787d7">end</span>
+<span color="#d787d7">end</span>
+
+
+</span>
+
+-- [font=monospace 99]
+<span face="monospace">
+
+<span color="#d787d7">def</span> <span color="#87afd7">log_middleware</span>(app)
+  <span color="#d78700">lambda</span> <span color="#d787d7">do</span> |<span color="#d75f5f">request</span>|
+    <span color="#ffd75f">File</span>.open(<span color="#afd700">&quot;</span><span color="#afd700">middleware.log</span><span color="#afd700">&quot;</span>, <span color="#afd700">&quot;</span><span color="#afd700">w+</span><span color="#afd700">&quot;</span>) <span color="#d787d7">do</span> |<span color="#d75f5f">f</span>|
+      f.puts request
+    <span color="#d787d7">end</span>
+    app_response = app(request)
+    app_response
+  <span color="#d787d7">end</span>
+<span color="#d787d7">end</span>
+
+app = <span color="#d78700">lambda</span> <span color="#d787d7">do</span> |<span color="#d75f5f">env</span>|
+    [<span color="#d78700">200</span>, {<span color="#afd700">&quot;</span><span color="#afd700">Content-Type</span><span color="#afd700">&quot;</span><span color="#d78700"> =&gt; </span><span color="#afd700">&quot;</span><span color="#afd700">text/plain</span><span color="#afd700">&quot;</span>}, [<span color="#afd700">&quot;</span><span color="#afd700">Hello, world!</span><span color="#afd700">&quot;</span>]]
+<span color="#d787d7">end</span>
+
+new_app = log_middleware(app)
+
+
+</span>
+
+--
+
+Middleware Examples
+
+Logging
+Authenticating
+Proxy
+Multi-app routing
+Session tracking
+Debugging
+Content filtering
+Content translation**
+Content injection
+Static serving
+
+--
+
+THE END
+
